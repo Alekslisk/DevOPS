@@ -6,3 +6,4 @@ resources:
   - laravel.yaml
   - minio.yaml
   - network-policies.yaml
+  - ingress.yaml
