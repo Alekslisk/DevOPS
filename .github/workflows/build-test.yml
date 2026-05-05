@@ -12,20 +12,17 @@ jobs:
     runs-on: ubuntu-latest
     environment: AtakuHub
     steps:
-      # 1. Скачиваем код из репозитория
       - name: Checkout Code
         uses: actions/checkout@v3
         with:
           token: ${{ secrets.GH_PAT }}
 
-      # 2. Логинимся в Docker Hub
       - name: Login to Docker Hub
         uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      # 3. Собираем и пушим Docker образ (используем хэш коммита как тег)
       - name: Build and Push Docker Image
         env:
           IMAGE_TAG: ${{ github.sha }}
@@ -33,7 +30,6 @@ jobs:
           docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/imagegalary:$IMAGE_TAG .
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/imagegalary:$IMAGE_TAG
 
-      # 4. Обновляем версию образа в манифестах K8s
       - name: Update Kustomize Image Tag
         env:
           IMAGE_TAG: ${{ github.sha }}
@@ -42,7 +38,6 @@ jobs:
           # Утилита kustomize меняет тег на новый
           kustomize edit set image imagegalary=${{ secrets.DOCKERHUB_USERNAME }}/imagegalary:$IMAGE_TAG
 
-      # 5. Делаем коммит новых манифестов обратно в Git
       - name: Commit and Push Changes
         run: |
           git config --global user.name "GitHub Actions Bot"
