@@ -10,6 +10,7 @@ on:
 jobs:
   build-and-update:
     runs-on: ubuntu-latest
+    environment: AtakuHub
     steps:
       # 1. Скачиваем код из репозитория
       - name: Checkout Code
