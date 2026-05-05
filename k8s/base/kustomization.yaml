@@ -5,4 +5,4 @@ resources:
   - postgres.yaml
   - laravel.yaml
   - minio.yaml
-  - ingress.yaml
+  - network-policies.yaml
