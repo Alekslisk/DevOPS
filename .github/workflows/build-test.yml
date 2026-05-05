@@ -40,7 +40,7 @@ jobs:
         run: |
           cd k8s/overlays/test
           # Утилита kustomize меняет тег на новый
-          kustomize edit set image alekshex/imagegalary=${{ secrets.DOCKERHUB_USERNAME }}/imagegalary:$IMAGE_TAG
+          kustomize edit set image imagegalary=${{ secrets.DOCKERHUB_USERNAME }}/imagegalary:$IMAGE_TAG
 
       # 5. Делаем коммит новых манифестов обратно в Git
       - name: Commit and Push Changes
