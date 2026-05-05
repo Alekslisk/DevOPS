@@ -1,11 +1,9 @@
 name: Build and Deploy to Test
 
-# Запускаем пайплайн только при пуше в твою рабочую ветку
 on:
   push:
     branches:
-      - feature/k8s-deployment
-    # Игнорируем изменения в папке k8s, чтобы бот не запускал пайплайн по кругу
+      - test
     paths-ignore:
       - 'k8s/**'
 
@@ -41,7 +39,7 @@ jobs:
         run: |
           cd k8s/overlays/test
           # Утилита kustomize меняет тег на новый
-          kustomize edit set image твой_логин_dockerhub/imagegalary=${{ secrets.DOCKERHUB_USERNAME }}/imagegalary:$IMAGE_TAG
+          kustomize edit set image alekshex/imagegalary=${{ secrets.DOCKERHUB_USERNAME }}/imagegalary:$IMAGE_TAG
 
       # 5. Делаем коммит новых манифестов обратно в Git
       - name: Commit and Push Changes
