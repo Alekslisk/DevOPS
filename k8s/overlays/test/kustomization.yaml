@@ -12,7 +12,7 @@ images:
   newTag: 2744d430a020d73671b176e0bc7388ce509a7cc3
 - name: imagegalary
   newName: alekshex/imagegalary
-  newTag: cce795e0fe908905c19de465d554c5dd06952837
+  newTag: 7df129c24e19858ac7f86ca4b7b83be8f727050c
 
 secretGenerator:
 - literals:
