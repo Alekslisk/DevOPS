@@ -1,0 +1,421 @@
+body {
+    background-color: #fff6ec;
+    font-family: 'Comfortaa', sans-serif;
+    margin: 0;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.image-page-container {
+    max-width: 1100px;
+    margin: 50px auto;
+    background-color: #fff9f0;
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    display: flex;
+    flex-direction: column; /* Вертикальное выравнивание секций */
+    align-items: center; /* Центрирование по горизонтали */
+}
+
+.top-section {
+    display: flex;
+    width: 100%; /* Ширина, соответствующая контейнеру */
+    gap: 20px; /* Отступ между колонками */
+}
+
+.image-section, .info-section {
+    /* Ваши существующие стили для этих секций */
+    width: 50%; /* Половина ширины родительского элемента */
+}
+
+.image-section {
+    display: flex;
+    align-items: center; /* Align the image vertically */
+    justify-content: center; /* Align the image horizontally */
+    position: relative;
+}
+
+
+
+
+.displayed-image {
+    max-width: 100%; /* Allow the image to fill the space */
+    max-height: 500px; /* Maximum height for the image */
+    object-fit: contain;
+    border-radius: 10px;
+}
+
+.info-section {
+    display: flex;
+    align-items: center; /* Центрирование по вертикали */
+    justify-content: center; /* Центрирование по горизонтали */
+    background-color: #fff9f0;
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+}
+
+.info-content { /* Новый класс для внутреннего контейнера */
+    max-width: 90%; /* Максимальная ширина содержимого */
+    text-align: center; /* Выравнивание текста по центру */
+}
+
+.info-section h2 {
+    font-size: 24px;
+    color: #333;
+}
+
+.info-section p {
+    color: #666;
+    line-height: 1.6;
+}
+
+.tags {
+    margin-top: 10px;
+}
+
+.tag {
+    background-color: #e4e4e4;
+    border-radius: 10px;
+    padding: 5px;
+    margin: 5px 5px 5px 0; /* Добавлены вертикальные отступы */
+    display: inline-block;
+}
+
+.likes-favorites {
+    position: absolute;
+    bottom: 10px;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 20px; /* Отступы для размещения иконок в углах */
+    pointer-events: none; /* Делает блок некликабельным, чтобы можно было кликнуть по изображению */
+    opacity: 0; /* Скрыть по умолчанию */
+    transition: opacity 0.3s ease;
+}
+
+.image-section:hover .likes-favorites {
+    opacity: 1; /* Показать при наведении на изображение */
+}
+
+.likes, .favorites {
+    margin-right: 10px;
+}
+
+
+
+
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1000; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgba(0,0,0,0.9); /* Black w/ opacity */
+}
+
+/* Modal Content (Image) */
+.modal-content {
+    margin: auto;
+    display: block;
+    max-width: 100%; /* Allow the image to be up to 100% of the modal width */
+    max-height: 100%; /* Allow the image to be up to 100% of the modal height */
+    position: absolute; /* Positioning */
+    top: 50%; /* Position in the middle vertically */
+    left: 50%; /* Position in the middle horizontally */
+    transform: translate(-50%, -50%); /* Center the image */
+    object-fit: contain; /* Ensure the image keeps its aspect ratio */
+}
+
+/* Caption of Modal Image (Image Text) - Same as Alt text */
+#caption {
+    margin: auto;
+    display: block;
+    width: 80%;
+    max-width: 700px;
+    text-align: center;
+    color: #ccc;
+    padding: 10px 0;
+    height: 150px;
+}
+
+/* The Close Button */
+.close {
+    position: absolute;
+    top: 15px;
+    right: 35px;
+    color: #f1f1f1;
+    font-size: 40px;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.close:hover,
+.close:focus {
+    color: #bbb;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+
+/* Дополнительные стили для секции комментариев */
+.comments-section {
+    font-family: 'Comfortaa', sans-serif; /* Установка шрифта для всей секции комментариев */
+    background-color: #fff6ec;
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    padding: 20px;
+    margin-top: 30px;
+    width: 100%;
+    max-width: 600px; /* Управляйте максимальной шириной по вашему усмотрению */
+}
+
+/* Стили для формы добавления комментария */
+.comments-section form {
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+/* Стили для списка комментариев */
+.comments-section .comments {
+    width: 100%;
+}
+/* Стили для отдельного комментария */
+.comments-section .comment {
+    background-color: #fff6ec;
+    border-radius: 10px;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+/* Стили для текстового поля и кнопки формы */
+.comments-section form textarea,
+.comments-section form button {
+    width: calc(100% - 20px); /* Учет внутренних отступов */
+    padding: 10px;
+    margin-top: 10px;
+    border-radius: 10px;
+}
+
+.comments-section form button {
+    font-family: 'Comfortaa', sans-serif; /* Установка шрифта Comfortaa */
+    background-color: #333; /* Цвет фона кнопки */
+    color: white; /* Цвет текста кнопки */
+    border: none; /* Убрать границу */
+    cursor: pointer; /* Курсор в виде указателя */
+    transition: background-color 0.3s ease; /* Плавный переход цвета фона */
+}
+
+.comments-section form button:hover {
+    background-color: #555;
+}
+
+.comment-time {
+    font-size: 0.8em;
+    color: #707070;
+    margin-top: 5px;
+    margin-bottom: 10px;
+}
+
+.comment {
+    background-color: #fff9f0;
+    border: 2px solid #ccc;
+    border-radius: 10px;
+    padding: 10px;
+    margin-bottom: 15px;
+    color: black;
+}
+
+.comment-content {
+    margin-bottom: 10px;
+}
+
+.comment p {
+    margin: 5px 0;
+}
+
+
+a {
+    color: #333; /* Темно-серый цвет, не такой яркий, как стандартный синий */
+    text-decoration: none; /* Убрать подчеркивание */
+    transition: color 0.3s ease; /* Плавный переход цвета */
+}
+
+a:hover {
+    color: #000; /* Цвет при наведении */
+    text-decoration: underline; /* Подчеркивание при наведении для дополнительной подсказки */
+}
+
+
+.edit-delete-buttons {
+    margin-top: 20px; /* Отступ сверху */
+    display: flex; /* Горизонтальное выравнивание кнопок */
+    gap: 10px; /* Расстояние между кнопками */
+}
+
+.edit-delete-buttons .button {
+    display: inline-block;
+    padding: 5px 10px; /* Уменьшенные внутренние отступы */
+    background-color: #333;
+    color: white;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    border-radius: 5px;
+    margin-bottom: 10px; /* Отступ между кнопками */
+    width: 125px; /* Уменьшенная фиксированная ширина кнопок */
+    height: 30px; /* Уменьшенная фиксированная высота кнопок */
+    font-size: 14px; /* Меньший размер шрифта для текста на кнопке */
+    line-height: 30px; /* Высота строки равна высоте кнопки для вертикального выравнивания текста */
+    text-align: center; /* Горизонтальное выравнивание текста по центру */
+}
+
+.edit-delete-buttons .button:hover {
+    background-color: #555; /* Цвет фона при наведении */
+}
+
+.edit-comment-button {
+    font-family: 'Comfortaa', sans-serif; /* Установка шрифта Comfortaa */
+    padding: 5px 10px;
+    background-color: #e4e4e4; /* Светло-серый цвет */
+    color: #333; /* Темно-серый текст */
+    border: none;
+    border-radius: 15px; /* Более закругленные углы */
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.edit-comment-button:hover {
+    background-color: #ccc; /* Немного темнее при наведении */
+}
+
+.comment a {
+    color: #666; /* Светло-серый цвет */
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.comment a:hover {
+    color: #333; /* Темнее при наведении */
+    text-decoration: underline;
+}
+
+.delete-comment-button {
+    padding: 5px 10px;
+    background-color: #e57373; /* Красный цвет */
+    color: white;
+    border: none;
+    border-radius: 15px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.delete-comment-button:hover {
+    background-color: #d32f2f; /* Темнее красный при наведении */
+}
+
+.comment-actions {
+    margin-top: 10px;
+}
+
+
+
+.likes-container, .favorites-container {
+    position: absolute;
+    bottom: 10px;
+    display: flex;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.6); /* Темный фон с прозрачностью */
+    padding: 5px 10px; /* Увеличенные внутренние отступы */
+    border-radius: 10px;
+    opacity: 0; /* Скрыть по умолчанию */
+    transition: opacity 0.3s ease; /* Плавный переход */
+}
+
+.likes-container {
+    left: 10px;
+}
+
+.favorites-container {
+    right: 10px;
+}
+
+
+/* Показать контейнеры при наведении */
+.image-section:hover .likes-container,
+.image-section:hover .favorites-container {
+    opacity: 1;
+}
+
+/* Общие стили для иконок */
+.icon {
+    color: #fff6ec;
+    pointer-events: auto;
+    margin-right: 5px;
+    font-size: 24px;
+    transition: color 0.1s ease; /* Добавлено для плавного перехода цвета */
+}
+
+.liked, .fas.fa-heart.liked {
+    color: #ff6868; /* Или другой желаемый цвет для "лайка" */
+}
+
+.favorited, .fas.fa-star.favorited {
+    color: #ffd700; /* Или другой желаемый цвет для "избранного" */
+}
+
+
+#like-count {
+    color: #fff6ec;
+}
+
+
+
+.image-section, .info-section, .comments-section {
+    margin-bottom: 20px;
+}
+
+.displayed-image {
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+}
+
+
+
+.likes-container {
+    left: 10px;
+}
+
+.favorites-container {
+    right: 10px;
+}
+
+.icon {
+    color: #ccc;
+}
+
+
+.edit-delete-buttons, .comment-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+}
+
+
+.likes-container .icon:hover, .icon.liked {
+    color: #ff6868;
+}
+
+.favorites-container .icon:hover, .icon.favorited {
+    color: #ffd700;
+}
+

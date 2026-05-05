@@ -1,0 +1,153 @@
+body {
+    background-color: #fff6ec;
+    font-family: 'Comfortaa', sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    margin: 0;
+    padding: 20px;
+}
+
+.edit-container {
+    background-color: #fff9f0;
+    border-radius: 15px;
+    padding: 30px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    width: 100%;
+    max-width: 500px;
+}
+
+.edit-title {
+    color: black;
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 2rem;
+}
+
+.edit-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.edit-form input, .edit-form textarea, .edit-form select {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 10px;
+    border: 2px solid #ccc;
+    border-radius: 10px;
+    background-color: #fff9f0;
+    color: black;
+    box-sizing: border-box;
+}
+
+.edit-form input::placeholder, .edit-form textarea::placeholder {
+    color: #aaa;
+    font-style: italic;
+}
+
+.edit-button {
+    background-color: black;
+    color: white;
+    border-radius: 8px;
+    padding: 12px 20px;
+    font-size: 16px;
+    margin: 10px 0;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+    width: 90%; /* Ширина кнопки как у полей ввода */
+}
+
+.edit-button:hover {
+    background-color: #5c5c5c;
+    color: white;
+}
+
+.error-messages {
+    color: #e3342f;
+    padding: 10px;
+    margin-top: 20px;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    text-align: center;
+}
+
+.edit-link {
+    color: black;
+    text-align: center;
+    margin-top: 20px;
+    font-size: 1rem;
+}
+
+.edit-link a {
+    color: #4e9af1;
+    text-decoration: none;
+}
+
+.edit-link a:hover {
+    text-decoration: underline;
+}
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 46px;
+    height: 28px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: -6px;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+    border-radius: 24px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 24px;
+    width: 24px;
+    left: 2px;
+    bottom: 2px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+input:checked + .slider {
+    background-color: #000000;
+}
+
+input:checked + .slider:before {
+    transform: translateX(18px);
+}
+
+.adult-content-toggle {
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+    width: 100%;
+}
+
+.adult-content-label {
+    margin-left: 20px;
+}
+
+label {
+    margin-bottom: 5px;
+    display: block;
+    color: black;
+    width: 100%;
+}

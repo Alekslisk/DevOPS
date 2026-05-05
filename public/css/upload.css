@@ -1,0 +1,249 @@
+body {
+    background-color: #fff6ec; /* Мягкий фон страницы */
+    font-family: 'Comfortaa', sans-serif; /* Закругленный шрифт Comfortaa */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    margin: 0;
+    padding: 20px;
+}
+
+.container {
+    display: flex;
+    justify-content: center; /* Центрирование контейнера */
+    max-width: 1200px; /* Максимальная ширина контейнера */
+    width: 100%; /* Ширина на всю доступную ширину */
+    gap: 20px; /* Отступ между панелями */
+    margin: 0 auto; /* Центрирование и удаление внешних отступов */
+    background-color: #fff9f0; /* Светлый фон для форм */
+}
+
+.container form {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    width: 100%;
+    background-color: #fff9f0; /* Светлый фон для форм */
+    border: 3px solid black; /* Черные рамки */
+    border-radius: 15px; /* Закругленные углы */
+    padding: 20px;
+    gap: 20px;
+}
+
+.left-panel, .right-panel {
+    flex: 1 1 50%;
+    border: 2px solid black;
+    border-radius: 15px;
+    padding: 20px;
+    margin: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    background-color: #fff9f0;
+    height: 500px;
+    min-height: 500px;
+}
+
+.upload-area {
+    border: 2px dashed black;
+    border-radius: 12px;
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    text-align: center;
+    padding: 40px 20px;
+    height: 410px;
+}
+
+#imagePreview {
+    flex-grow: 1;
+    display: flex; /* Используем flex для центрирования содержимого */
+    align-items: center; /* Центрирование по вертикали */
+    justify-content: center; /* Центрирование по горизонтали */
+    overflow: hidden;
+    position: relative;
+    height: 100%; /* Заполнение всей доступной высоты */
+}
+
+/* Стили для остальных элементов формы */
+form label, form input, form select, form textarea, form button {
+    display: block;
+    width: 90%; /* Уменьшенная ширина элементов */
+    margin: 10px auto; /* Центрирование и отступы */
+    border-radius: 8px; /* Закругленные углы */
+}
+
+form select {
+    width: 95%;
+}
+
+form button {
+    width: 97%;
+}
+
+/* Placeholder стили */
+input::placeholder, textarea::placeholder {
+    color: #aaa;
+    font-style: italic;
+}
+
+input, textarea, select, button {
+    padding: 12px; /* Больше паддинга для большего комфорта */
+    border: 2px solid #ccc; /* Более светлая рамка */
+    background-color: #fff9f0; /* Светлый фон */
+    border-radius: 10px; /* Более закругленные углы */
+}
+
+form label {
+    margin-bottom: 5px;
+}
+
+
+button {
+    font-family: 'Comfortaa', sans-serif;
+    background-color: black;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+    border-radius: 8px;
+    padding: 12px 20px; /* Увеличенные размеры кнопки */
+    font-size: 16px; /* Увеличенный размер шрифта */
+    width: auto; /* Автоматическая ширина */
+    margin-top: 10px; /* Отступ сверху */
+}
+
+button:hover {
+    background-color: #5c5c5c !important; /* Темно-серый фон при наведении */
+    color: white !important;
+}
+
+
+
+/* Стили для кнопки удаления изображения */
+.remove-image-btn {
+    font-family: 'Comfortaa', sans-serif;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(255, 255, 255, 0.7);
+    color: black;
+    border-radius: 10px;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-weight: bold;
+    display: none;
+    border: 2px solid #000;
+    width: 120px; /* Увеличенная ширина */
+    height: 40px; /* Фиксированная высота */
+    line-height: 20px;
+}
+
+#imagePreview:hover .remove-image-btn {
+    display: block;
+}
+
+#imagePreview:hover img {
+    filter: blur(2px) brightness(0.8); /* Добавлен эффект при наведении */
+}
+
+#imagePreview img {
+    max-width: 80%;
+    max-height: 80%; /* Ограничение по максимальной высоте */
+    object-fit: contain;
+}
+/* Стилизация переключателя */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 46px; /* Уменьшенная ширина */
+    height: 28px; /* Уменьшенная высота */
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+    border-radius: 24px; /* Закругление для уменьшенного слайдера */
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 24px; /* Уменьшенная высота ползунка */
+    width: 24px; /* Уменьшенная ширина ползунка */
+    left: 2px; /* Отступ для ползунка */
+    bottom: 2px; /* Отступ для ползунка */
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+input:checked + .slider {
+    background-color: #000000;
+}
+
+input:checked + .slider:before {
+    transform: translateX(18px); /* Смещение для уменьшенного слайдера */
+}
+
+.adult-content-toggle {
+    display: flex;
+    align-items: center; /* Выравнивание элементов по центру */
+    margin-right: 224px;
+}
+
+.adult-content-label {
+    margin-top: 4px;
+}
+
+/* Стили для модального окна */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+.modal-content {
+    background-color: #fff9f0;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}

@@ -1,0 +1,57 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: otaku-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: otaku
+      MYSQL_USER: otaku_user
+      MYSQL_PASSWORD: secret
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - otaku-network
+
+  app:
+    build: .
+    container_name: otaku-app
+    restart: unless-stopped
+    depends_on:
+      - mysql
+    environment:
+      DB_CONNECTION: mysql
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_DATABASE: otaku
+      DB_USERNAME: otaku_user
+      DB_PASSWORD: secret
+      APP_ENV: local
+      APP_DEBUG: "true"
+      APP_KEY: "base64:rWIuslJ6dc/nl1171yh6xyULp4EsGjznWdWOasKaWZA="   
+    volumes:
+      - ./storage/app/public:/var/www/html/storage/app/public   # сохраняем картинки на хосте 
+    networks:
+      - otaku-network
+
+  nginx:
+    image: nginx:alpine
+    container_name: otaku-nginx
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    volumes:
+      - ./public:/var/www/html/public
+      - ./docker/nginx.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - app
+    networks:
+      - otaku-network
+
+volumes:
+  mysql_data:
+
+networks:
+  otaku-network:

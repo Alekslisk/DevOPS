@@ -1,0 +1,107 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Comfortaa', sans-serif;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center; /* Выравниваем элементы по центру */
+    background-color: rgba(255, 249, 240, 0.9);
+    padding: 10px 20px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    box-sizing: border-box;
+    z-index: 1000;
+    transition: padding 0.3s, background-color 0.3s, backdrop-filter 0.3s;
+}
+
+.left-header, .right-header {
+    display: flex;
+    align-items: center;
+}
+
+.site-name {
+    font-size: 24px;
+    margin-right: 20px;
+    color: #333;
+}
+
+.header-button {
+    background-color: #fff9f0;
+    color: #333;
+    border: 2px solid #ccc;
+    border-radius: 15px;
+    padding: 5px 10px;
+    text-decoration: none;
+    margin-right: 10px;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.header-button:hover {
+    background-color: #5c5c5c;
+    color: white;
+}
+
+.search-bar {
+    position: relative; /* Для позиционирования иконки внутри */
+    flex-grow: 1;
+    padding: 0 20px;
+}
+
+.search-input {
+    width: 100%;
+    padding: 5px 10px 5px 30px; /* Добавить отступ слева для иконки */
+    border: 1px solid #ccc;
+    border-radius: 15px;
+    background-color: #fff9f0;
+    color: #333;
+}
+
+.search-icon {
+    position: absolute;
+    left: -2px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #333;
+    cursor: pointer; /* Добавляем указатель курсора */
+}
+
+.search-bar input {
+    width: 100%;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 15px;
+    background-color: #fff9f0;
+    color: #333;
+}
+
+.header.scrolled {
+    padding: 5px 15px; /* Уменьшаем размер шапки */
+    background-color: rgba(255, 249, 240, 0.7); /* Увеличиваем прозрачность */
+    backdrop-filter: blur(5px); /* Добавляем эффект размытия */
+    -webkit-backdrop-filter: blur(5px); /* Эффект размытия для Safari */
+}
+
+/* Стили для выпадающего списка сортировки */
+.sorting-dropdown {
+    margin-right: 20px;
+}
+
+#sorting-select {
+    border: 1px solid #ccc;
+    border-radius: 15px;
+    background-color: #fff9f0;
+    padding: 5px 10px;
+    font-family: 'Comfortaa', sans-serif;
+    font-size: 16px;
+}
+
+
+.no-style-link {
+    text-decoration: none; /* Убирает подчеркивание ссылки */
+    color: inherit; /* Наследует цвет текста от родительского элемента */
+}

@@ -1,0 +1,69 @@
+body {
+    background-color: #fff6ec;
+    font-family: 'Comfortaa', sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+.main-container {
+    width: 80%;
+    margin: auto;
+    padding-top: 100px; /* Отступ сверху для учета высоты шапки */
+}
+
+.albums-container {
+    text-align: center;
+    margin-bottom: 50px; /* Отступ между заголовком альбома и изображениями */
+}
+
+.albums-container h1 {
+    font-size: 2em;
+    color: #333;
+    margin-bottom: 10px; /* Отступ после заголовка */
+}
+
+.albums-container p {
+    font-size: 1em;
+    color: #666;
+    margin-bottom: 20px; /* Отступ после описания */
+}
+
+.images-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+}
+
+.image-container {
+    position: relative;
+    overflow: hidden;
+    border-radius: 15px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Плавный эффект при наведении */
+}
+
+.image-container:hover {
+    transform: scale(1.05); /* Небольшое увеличение при наведении */
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2); /* Тень для добавления глубины */
+}
+
+.image-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.image-title {
+    position: absolute;
+    bottom: 10px; /* Отступ снизу для центрирования текста */
+    left: 50%; /* Центрирование по горизонтали */
+    transform: translateX(-50%); /* Сдвигаем на половину ширины элемента влево для центрирования */
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    padding: 5px 10px; /* Дополнительный горизонтальный отступ */
+    display: none;
+    border-radius: 5px; /* Скругленные углы для текстового блока */
+}
+
+.image-container:hover .image-title {
+    display: block;
+}

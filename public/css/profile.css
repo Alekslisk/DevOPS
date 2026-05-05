@@ -1,0 +1,249 @@
+body {
+    background-color: #fff6ec;
+    font-family: 'Comfortaa', sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+.main-container {
+    width: 80%;
+    margin: auto;
+    padding-top: 100px; /* Отступ сверху для учета высоты шапки */
+}
+
+.profile-header {
+    text-align: center; /* Центрирование текста */
+    margin-bottom: 20px;
+}
+
+.admin-controls {
+    text-align: center; /* Центрирование кнопки для администратора */
+    margin-bottom: 20px;
+}
+
+.profile-header h2 {
+    margin: 0;
+}
+
+.block-button {
+    font-family: 'Comfortaa', sans-serif;
+    padding: 10px 20px;
+    background-color: #ff6b6b;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.tabs {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.tab {
+    background-color: #fff9f0;
+    color: #333;
+    border: 2px solid #ccc;
+    border-radius: 15px;
+    padding: 10px 15px; /* Увеличенный padding для большего размера */
+    font-size: 16px; /* Опционально, можно увеличить размер шрифта */
+    text-decoration: none;
+    margin-right: 10px;
+    transition: background-color 0.3s, color 0.3s;
+    cursor: pointer;
+}
+
+
+.tab:hover, .tab.active {
+    background-color: #5c5c5c;
+    color: white;
+}
+
+.images-section {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+}
+
+.images-section.hidden {
+    display: none;
+}
+
+.image-container {
+    position: relative;
+    overflow: hidden;
+    border-radius: 15px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.image-container:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+}
+
+.image-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.image-title {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: none;
+}
+
+.image-container:hover .image-title {
+    display: block;
+}
+
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgb(0,0,0);
+    background-color: rgba(0,0,0,0.4);
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 30%;
+    border-radius: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+
+.modal-form {
+    width: 100%;
+    text-align: center;
+}
+
+.modal-form div {
+    margin: 10px 0;
+}
+
+.radio-input {
+    display: none;
+}
+
+.radio-label {
+    display: block;
+    padding: 10px;
+    background-color: #fff9f0;
+    color: #333;
+    border: 2px solid #ccc;
+    border-radius: 15px;
+    text-align: center;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.radio-input:checked + .radio-label {
+    background-color: #5c5c5c;
+    color: white;
+}
+
+.submit-button {
+    font-family: 'Comfortaa', sans-serif;
+    padding: 10px 20px;
+    background-color: #ff6b6b; /* Красный цвет */
+    color: white;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    align-self: center; /* Центрирование кнопки */
+}
+
+.submit-button:hover {
+    background-color: #e55a5a; /* Темно-красный цвет при наведении */
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* Стили для текстовых полей и полей даты в модальном окне */
+.modal-form input[type="text"],
+.modal-form input[type="date"],
+.modal-form .radio-label { /* Добавляем .radio-label */
+    width: 90%; /* Унифицируем ширину */
+    padding: 10px;
+    margin-top: 5px;
+    border: 2px solid #ccc;
+    border-radius: 10px;
+    font-size: 16px;
+    font-family: 'Comfortaa', sans-serif;
+    background-color: #fff9f0;
+    color: #333;
+}
+
+.modal-form .radio-label {
+    width: calc(90% - 20px); /* Уменьшаем ширину, учитывая padding */
+    display: inline-block; /* Используем inline-block для корректного отображения */
+    margin: 5px 0; /* Отступ сверху и снизу */
+    box-sizing: border-box; /* Включаем border-box для корректного расчета ширины */
+}
+
+.unblock-button {
+    font-family: 'Comfortaa', sans-serif;
+    padding: 10px 20px;
+    background-color: #4CAF50; /* Зеленый цвет для кнопки снятия блокировки */
+    color: white;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-top: 10px;
+}
+
+.unblock-button:hover {
+    background-color: #45a049; /* Темно-зеленый цвет при наведении */
+}
+
+
+.modal-content button {
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-top: 20px;
+}
+
+.modal-content button:hover {
+    background-color: #45a049;
+}
