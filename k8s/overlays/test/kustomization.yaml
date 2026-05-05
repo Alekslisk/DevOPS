@@ -2,25 +2,28 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
 resources:
-  - ../../base
+- ../../base
 
 namespace: imagegalary-test
 
 images:
-  - name: imagegalary
-    newName: alekshex/imagegalary 
-    newTag: v1.0.0-test
+- name: alekshex/imagegalary
+  newName: alekshex/imagegalary
+  newTag: 2744d430a020d73671b176e0bc7388ce509a7cc3
+- name: imagegalary
+  newName: alekshex/imagegalary
+  newTag: v1.0.0-test
 
 secretGenerator:
-  - name: app-secrets
-    literals:
-      - POSTGRES_USER=laravel_test_user
-      - POSTGRES_PASSWORD=super_secret_test_db_pass
-      - AWS_ACCESS_KEY_ID=minioadmin
-      - AWS_SECRET_ACCESS_KEY=minioadmin_secret
-      - AWS_DEFAULT_REGION=us-east-1
-      - AWS_BUCKET=imagegalary
-      - AWS_ENDPOINT=http://minio-service:9000
+- literals:
+  - POSTGRES_USER=laravel_test_user
+  - POSTGRES_PASSWORD=super_secret_test_db_pass
+  - AWS_ACCESS_KEY_ID=minioadmin
+  - AWS_SECRET_ACCESS_KEY=minioadmin_secret
+  - AWS_DEFAULT_REGION=us-east-1
+  - AWS_BUCKET=imagegalary
+  - AWS_ENDPOINT=http://minio-service:9000
+  name: app-secrets
 
 patches:
-  - path: patch.yaml
+- path: patch.yaml
