@@ -1,11 +1,6 @@
-patches:
-  - target:
-      kind: Rollout        
-      name: laravel-rollout 
-    patch: |-
-      apiVersion: argoproj.io/v1alpha1 
-      kind: Rollout
-      metadata:
-        name: laravel-rollout
-      spec:
-        replicas: 2
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout                  
+metadata:
+  name: laravel-rollout         
+spec:
+  replicas: 2 
