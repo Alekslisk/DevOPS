@@ -2,7 +2,7 @@ apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
   name: laravel-hpa
-  namespace: imagegalary-test
+  
 spec:
   scaleTargetRef:
     apiVersion: argoproj.io/v1alpha1
