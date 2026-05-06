@@ -1,6 +1,11 @@
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: laravel-app
-spec:
-  replicas: 1
+patches:
+  - target:
+      kind: Rollout        
+      name: laravel-rollout 
+    patch: |-
+      apiVersion: argoproj.io/v1alpha1 
+      kind: Rollout
+      metadata:
+        name: laravel-rollout
+      spec:
+        replicas: 2
