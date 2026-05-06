@@ -40,8 +40,8 @@ class ImageController extends Controller
 
         // Обработка загрузки файла изображения
         if ($request->hasFile('image')) {
-            $path = $request->file('image')->store('images', 'public');
-            $url = Storage::url($path);
+            $path = $request->file('image')->store('images', 's3');
+            $url = Storage::disk('s3')->url($path); 
         } else {
             // Возвращаем ошибку, если изображение не было загружено
             return back()->withErrors(['image' => 'Ошибка загрузки изображения.']);
@@ -196,10 +196,10 @@ class ImageController extends Controller
         $image->tags()->detach();
     
         // Удалите изображение из хранилища (публичной папки)
-        $filePath = str_replace('/storage/', '', $image->url);
+        $filePath = str_replace(env('AWS_URL') . '/', '', $image->url); 
         
-        if (Storage::disk('public')->exists($filePath)) {
-            Storage::disk('public')->delete($filePath);
+        if (Storage::disk('s3')->exists($filePath)) {
+            Storage::disk('s3')->delete($filePath);
         }
                 
     

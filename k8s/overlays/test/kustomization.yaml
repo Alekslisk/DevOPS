@@ -11,16 +11,5 @@ images:
     newName: alekshex/imagegalary 
     newTag: v1.0.0-test
 
-secretGenerator:
-  - name: app-secrets
-    literals:
-      - POSTGRES_USER=laravel_test_user
-      - POSTGRES_PASSWORD=super_secret_test_db_pass
-      - AWS_ACCESS_KEY_ID=minioadmin
-      - AWS_SECRET_ACCESS_KEY=minioadmin_secret
-      - AWS_DEFAULT_REGION=us-east-1
-      - AWS_BUCKET=imagegalary
-      - AWS_ENDPOINT=http://minio-service:9000
-
 patches:
   - path: patch.yaml
