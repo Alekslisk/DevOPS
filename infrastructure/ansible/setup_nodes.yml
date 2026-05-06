@@ -1,0 +1,13 @@
+- name: Prepare Multipass Nodes for K8s
+  hosts: all
+  become: true
+  tasks:
+    - name: Clean up unused container images (Prevent DiskPressure)
+      command: crictl rmi --prune
+      ignore_errors: true
+
+    - name: Install essential packages
+      apt:
+        name: [nfs-common, curl, htop]
+        state: present
+        update_cache: yes

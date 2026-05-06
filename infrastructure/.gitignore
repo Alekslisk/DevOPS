@@ -1,0 +1,5 @@
+.terraform/
+*.tfstate*
+*.tfvars
+id_rsa
+ansible_vault_pass.txt

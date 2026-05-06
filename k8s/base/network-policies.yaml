@@ -22,17 +22,21 @@ apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
   name: minio-zero-trust
+  namespace: imagegalary-test #
 spec:
   podSelector:
     matchLabels:
-      app: minio 
+      app: minio
   policyTypes:
   - Ingress
   ingress:
   - from:
     - podSelector:
         matchLabels:
-          app: laravel 
+          app: laravel
+    - namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: ingress-nginx 
     ports:
     - protocol: TCP
       port: 9000

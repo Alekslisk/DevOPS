@@ -1,0 +1,28 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: loki-stack
+  namespace: argocd
+spec:
+  project: default
+  source:
+    chart: loki-stack
+    repoURL: https://grafana.github.io/helm-charts
+    targetRevision: 2.9.11
+    helm:
+      values: |
+        loki:
+          persistence:
+            enabled: true
+            size: 5Gi # Чтобы логи не стерлись при перезагрузке
+        promtail:
+          enabled: true # Этот агент будет собирать логи с Laravel и Postgres
+        grafana:
+          enabled: true # Визуализация
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: logging 
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true

@@ -1,8 +1,21 @@
 ---
 apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: minio-pvc
+  namespace: imagegalary-test 
+spec:
+  accessModes:
+    - ReadWriteOnce 
+  resources:
+    requests:
+      storage: 10Gi
+---
+apiVersion: v1
 kind: Service
 metadata:
   name: minio-service
+  namespace: imagegalary-test
 spec:
   ports:
     - name: api
@@ -18,10 +31,13 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: minio
+  namespace: imagegalary-test
 spec:
   selector:
     matchLabels:
       app: minio
+  strategy:
+    type: Recreate 
   template:
     metadata:
       labels:
@@ -43,18 +59,23 @@ spec:
         - --console-address
         - ":9001"
         env:
-        # Логин и пароль для админки MinIO (и они же ключи для S3)
         - name: MINIO_ROOT_USER
-          value: "minioadmin"
+          valueFrom:
+            secretKeyRef:
+              name: minio-secrets
+              key: root-user
         - name: MINIO_ROOT_PASSWORD
-          value: "minioadmin_secret"
+          valueFrom:
+            secretKeyRef:
+              name: minio-secrets
+              key: root-password
         ports:
         - containerPort: 9000
         - containerPort: 9001
-        # Монтируем диск, чтобы картинки сохранялись
         volumeMounts:
         - name: minio-storage
           mountPath: /data
       volumes:
       - name: minio-storage
-        emptyDir: {} # Для теста пойдет. Для продакшена тут пишут PersistentVolumeClaim
+        persistentVolumeClaim:
+          claimName: minio-pvc 
