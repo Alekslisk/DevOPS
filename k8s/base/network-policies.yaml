@@ -22,7 +22,7 @@ apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
   name: minio-zero-trust
-  namespace: imagegalary-test #
+   #
 spec:
   podSelector:
     matchLabels:

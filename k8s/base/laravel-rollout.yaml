@@ -2,7 +2,7 @@ apiVersion: argoproj.io/v1alpha1
 kind: Rollout
 metadata:
   name: laravel-rollout
-  namespace: imagegalary-test
+  
 spec:
   replicas: 4
   selector:

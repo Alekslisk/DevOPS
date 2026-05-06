@@ -3,7 +3,7 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: minio-pvc
-  namespace: imagegalary-test 
+   
 spec:
   accessModes:
     - ReadWriteOnce 
@@ -15,7 +15,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: minio-service
-  namespace: imagegalary-test
+  
 spec:
   ports:
     - name: api
@@ -31,7 +31,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: minio
-  namespace: imagegalary-test
+  
 spec:
   selector:
     matchLabels:
