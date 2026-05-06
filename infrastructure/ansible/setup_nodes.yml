@@ -11,3 +11,27 @@
         name: [nfs-common, curl, htop]
         state: present
         update_cache: yes
+    
+    - name: Install Longhorn via Helm
+      kubernetes.core.helm:
+        name: longhorn
+        chart_ref: longhorn/longhorn
+        release_namespace: longhorn-system
+        create_namespace: yes
+        wait: yes
+
+    - name: Ensure app-secrets exist in the correct namespace
+      kubernetes.core.k8s:
+        state: present
+        definition:
+          apiVersion: v1
+          kind: Secret
+          metadata:
+            name: app-secrets
+            namespace: imagegalary-test 
+          type: Opaque
+          data:
+            AWS_ACCESS_KEY_ID: "{{ 'your_id' | b64encode }}"
+            AWS_SECRET_ACCESS_KEY: "{{ 'your_key' | b64encode }}"
+            POSTGRES_USER: "{{ 'your_user' | b64encode }}"
+            POSTGRES_PASSWORD: "{{ 'your_pass' | b64encode }}"
