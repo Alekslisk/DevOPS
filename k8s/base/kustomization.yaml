@@ -4,6 +4,7 @@ kind: Kustomization
 namespace: imagegalary-test
 
 resources:
+  - laravel-service.yaml
   - postgres.yaml           
   - laravel-rollout.yaml    
   - minio.yaml             
