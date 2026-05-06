@@ -2,14 +2,17 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
 resources:
-  - ../../base
+- ../../base
 
 namespace: imagegalary-test
 
 images:
-  - name: imagegalary
-    newName: alekshex/imagegalary 
-    newTag: v1.0.0-test
+- name: alekshex/imagegalary
+  newName: alekshex/imagegalary
+  newTag: 2744d430a020d73671b176e0bc7388ce509a7cc3
+- name: imagegalary
+  newName: alekshex/imagegalary
+  newTag: fc57b8ab06e6d9563f08694863af5bc1b2cccdda
 
 patches:
-  - path: patch.yaml
+- path: patch.yaml
