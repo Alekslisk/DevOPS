@@ -10,7 +10,7 @@ spec:
     size: 10Gi
   backup:
     barmanObjectStore:
-      destinationPath: "s3://pg-backups/" # Бакет в MinIO (создай его заранее)
+      destinationPath: "s3://pg-backups/"
       endpointURL: "http://minio-service.imagegalary-test.svc.cluster.local:9000"
       s3Credentials:
         accessKeyId:
