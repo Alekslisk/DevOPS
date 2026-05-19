@@ -76,7 +76,12 @@ variable "keycloak_secret_key" {
 }
 
 resource "kubernetes_namespace" "app_ns" {
-  metadata { name = "imagegalary-test" }
+  metadata {
+    name = "imagegalary-test"
+    labels = {
+      purpose = "apps"
+    }
+  }
 }
 
 resource "kubernetes_secret" "app_aws_secrets" {
@@ -218,11 +223,3 @@ resource "kubernetes_role_binding" "designer_access" {
   }
 }
 
-resource "kubernetes_namespace" "app_ns" {
-  metadata {
-    name = "imagegalary-test"
-    labels = {
-      purpose = "apps"
-    }
-  }
-}
