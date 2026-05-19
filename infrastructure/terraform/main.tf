@@ -128,10 +128,13 @@ resource "helm_release" "cnpg" {
 
 resource "helm_release" "keycloak" {
   name             = "keycloak"
-  repository       = "https://charts.bitnami.com/bitnami"
+
+  repository       = "oci://registry-1.docker.io/bitnamicharts"
   chart            = "keycloak"
   namespace        = "keycloak-system"
   create_namespace = true
+
+  version          = "24.4.6"
 
   set {
     name  = "auth.adminUser"
