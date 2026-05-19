@@ -18,14 +18,6 @@ jobs:
       TF_VAR_keycloak_secret_key: ${{ secrets.KEYCLOAK_SECRET_KEY }}
 
     steps:
-      - name: Setup SSH Key
-        run: |
-          mkdir -p ~/.ssh
-          cat << 'EOF' > ~/.ssh/k8s_terraform
-          ${{ secrets.SSH_PRIVATE_KEY }}
-          EOF
-          chmod 600 ~/.ssh/k8s_terraform
-
       - name: Checkout Code
         uses: actions/checkout@v3
 

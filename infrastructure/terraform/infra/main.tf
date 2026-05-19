@@ -13,10 +13,6 @@ terraform {
       source  = "hashicorp/helm"
       version = ">= 2.12.0"
     }
-    null = {
-      source  = "hashicorp/null"
-      version = ">= 3.2.0"
-    }
   }
 }
 
@@ -89,41 +85,6 @@ resource "kubernetes_secret" "app_aws_secrets" {
 }
 
 
-resource "null_resource" "prepare_longhorn_nodes" {
-  for_each = toset([
-    "10.188.157.79",  # master
-    "10.188.157.193", # master-2
-    "10.188.157.222", # master-3
-    "10.188.157.32",  # worker1
-    "10.188.157.244"  # worker2
-  ])
-
-  connection {
-    type        = "ssh"
-    user        = "ubuntu"
-    private_key = file("~/.ssh/k8s_terraform")
-    host        = each.key
-    timeout     = "2m"
-  }
-
-  provisioner "remote-exec" {
-    inline = [
-      "echo '==> [Terraform] Начало подготовки ноды ${each.key}...'",
-      "sudo apt-get update -y",
-      "sudo apt-get install -y nfs-common open-iscsi",
-      "sudo rm -rf /var/lib/longhorn/*",
-      "echo '==> [Terraform] Нода ${each.key} успешно настроена!'"
-    ]
-  }
-
-  triggers = {
-    nodes_bundle = join(",", [
-      "10.188.157.79", "10.188.157.193", "10.188.157.222", "10.188.157.32", "10.188.157.244"
-    ])
-  }
-}
-
-
 # ==========================================
 # ПОСЛЕДОВАТЕЛЬНАЯ УСТАНОВКА HELM-ЧАРТОВ
 # ==========================================
@@ -136,11 +97,7 @@ resource "helm_release" "longhorn" {
   namespace        = "longhorn-system"
   create_namespace = true
   wait             = true
-  timeout          = 450 # Даем 7.5 минут на выкачивание всех образов
-
-  depends_on = [
-    null_resource.prepare_longhorn_nodes
-  ]
+  timeout          = 450 
 }
 
 # Шаг 2: Разворачиваем CloudNative-PG (Оператор Postgres)
@@ -164,19 +121,18 @@ resource "helm_release" "argocd" {
 
   depends_on = [helm_release.cnpg]
 
-  set = [{
+  set {
     name  = "server.ingress.enabled"
     value = "true"
-  },
-  {
+  }
+  set {
     name  = "server.ingress.hosts[0]"
     value = "argo.imagegalary.local"
-  },
-  {
+  }
+  set {
     name  = "server.extraArgs[0]"
     value = "--insecure"
   }
-  ]
 }
 
 # Шаг 4: Разворачиваем Loki-Stack (Сбор логов)
@@ -189,10 +145,10 @@ resource "helm_release" "loki" {
 
   depends_on = [helm_release.argocd]
 
-  set =  [{
+  set {
     name  = "promtail.enabled"
     value = "true"
-  }]
+  }
 }
 
 # Шаг 5: Разворачиваем Keycloak (Аутентификация) через OCI
@@ -207,15 +163,16 @@ resource "helm_release" "keycloak" {
   
   depends_on = [helm_release.loki] 
 
-  set = [{
+  set {
     name  = "auth.adminUser"
     value = "admin"
-  },{
+  }
+  set {
     name  = "auth.adminPassword"
     value = var.keycloak_secret_key
-  },{
+  }
+  set {
     name  = "ingress.enabled"
     value = "false"
   }
-  ]
 }
