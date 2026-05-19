@@ -2,7 +2,19 @@
 # NETWORK POLICIES
 # ==========================================
 
-# Default Deny для приложения
+data "kubernetes_namespace" "app_ns" {
+  metadata {
+    name = "imagegalary-test" 
+  }
+}
+
+data "kubernetes_namespace" "argocd_ns" {
+  metadata {
+    name = "argocd"
+  }
+}
+
+
 resource "kubernetes_network_policy" "default_deny" {
   metadata {
     name      = "default-deny-ingress"
