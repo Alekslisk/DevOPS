@@ -194,10 +194,10 @@ resource "helm_release" "loki" {
 
   depends_on = [helm_release.argocd]
 
-  set {
+  set =  [{
     name  = "promtail.enabled"
     value = "true"
-  }
+  }]
 }
 
 # Шаг 5: Разворачиваем Keycloak (Аутентификация) через OCI
