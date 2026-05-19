@@ -9,10 +9,6 @@ terraform {
       version = "~> 2.0"
     }
   }
-  # Стейт храним в Git или S3/Minio
-  backend "local" {
-    path = "terraform.tfstate"
-  }
 }
 
 provider "kubernetes" {
@@ -25,7 +21,6 @@ provider "helm" {
   }
 }
 
-# Переменные (будут браться из TF_VAR_*)
 variable "minio_access_key" {
   type      = string
   sensitive = true
@@ -42,25 +37,30 @@ variable "keycloak_secret_key" {
 }
 
 # ==========================================
-# ТОЛЬКО ТО, ЧТО ЕЩЁ НЕ СОЗДАНО
+# DATA-РЕСУРСЫ (только чтение существующих неймспейсов)
 # ==========================================
 
-# Неймспейсы (с проверкой, что их нет)
 data "kubernetes_namespace" "monitoring" {
-  metadata {
-    name = "monitoring"
-    labels = {
-      purpose = "monitoring"
-    }
-  }
+  metadata { name = "monitoring" }
 }
 
-# Loki (был удалён)
+data "kubernetes_namespace" "app_ns" {
+  metadata { name = "imagegalary-test" }
+}
+
+data "kubernetes_namespace" "argocd_ns" {
+  metadata { name = "argocd" }
+}
+
+# ==========================================
+# HELM-РЕЛИЗЫ
+# ==========================================
+
 resource "helm_release" "loki" {
-  name             = "loki"
-  repository       = "https://grafana.github.io/helm-charts"
-  chart            = "loki-stack"
-  namespace        = kubernetes_namespace.monitoring.metadata[0].name
+  name       = "loki"
+  repository = "https://grafana.github.io/helm-charts"
+  chart      = "loki-stack"
+  namespace  = data.kubernetes_namespace.monitoring.metadata[0].name  # ✅ исправлено
 
   set {
     name  = "promtail.enabled"
@@ -68,7 +68,6 @@ resource "helm_release" "loki" {
   }
 }
 
-# CNPG (был удалён, CRD остались)
 resource "helm_release" "cnpg" {
   name             = "cnpg"
   repository       = "https://cloudnative-pg.github.io/charts"
@@ -77,12 +76,11 @@ resource "helm_release" "cnpg" {
   create_namespace = true
 }
 
-# Keycloak (был удалён)
 resource "helm_release" "keycloak" {
   name             = "keycloak"
   repository       = "https://charts.bitnami.com/bitnami"
   chart            = "keycloak"
-  version          = "24.4.5" 
+  version          = "24.4.5"
   namespace        = "keycloak-system"
   create_namespace = true
 
@@ -105,21 +103,8 @@ resource "helm_release" "keycloak" {
 # NETWORK POLICIES
 # ==========================================
 
-# Используем data-ресурсы для существующих неймспейсов
-data "kubernetes_namespace" "app_ns" {
-  metadata {
-    name = "imagegalary-test"
-  }
-}
-
-data "kubernetes_namespace" "argocd_ns" {
-  metadata {
-    name = "argocd"
-  }
-}
-
 # Default Deny для приложения
-resource "kubernetes_network_policy" "default_deny_apps" {
+resource "kubernetes_network_policy" "default_deny" {
   metadata {
     name      = "default-deny-ingress"
     namespace = data.kubernetes_namespace.app_ns.metadata[0].name
@@ -138,16 +123,12 @@ resource "kubernetes_network_policy" "ingress_to_laravel" {
   }
   spec {
     pod_selector {
-      match_labels = {
-        app = "laravel"
-      }
+      match_labels = { app = "laravel" }
     }
     ingress {
       from {
         namespace_selector {
-          match_labels = {
-            purpose = "infra"  # kube-system с Ingress Controller
-          }
+          match_labels = { purpose = "infra" }
         }
       }
       ports {
@@ -167,16 +148,12 @@ resource "kubernetes_network_policy" "laravel_to_postgres" {
   }
   spec {
     pod_selector {
-      match_labels = {
-        app = "postgres"
-      }
+      match_labels = { app = "postgres" }
     }
     ingress {
       from {
         pod_selector {
-          match_labels = {
-            app = "laravel"
-          }
+          match_labels = { app = "laravel" }
         }
       }
       ports {
@@ -196,16 +173,12 @@ resource "kubernetes_network_policy" "laravel_to_minio" {
   }
   spec {
     pod_selector {
-      match_labels = {
-        app = "minio"
-      }
+      match_labels = { app = "minio" }
     }
     ingress {
       from {
         pod_selector {
-          match_labels = {
-            app = "laravel"
-          }
+          match_labels = { app = "laravel" }
         }
       }
       ports {
@@ -225,16 +198,12 @@ resource "kubernetes_network_policy" "ingress_to_argocd" {
   }
   spec {
     pod_selector {
-      match_labels = {
-        "app.kubernetes.io/name" = "argocd-server"
-      }
+      match_labels = { "app.kubernetes.io/name" = "argocd-server" }
     }
     ingress {
       from {
         namespace_selector {
-          match_labels = {
-            purpose = "infra"
-          }
+          match_labels = { purpose = "infra" }
         }
       }
       ports {
