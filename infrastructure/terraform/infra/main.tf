@@ -35,11 +35,6 @@ provider "helm" {
 # ВХОДНЫЕ ПЕРЕМЕННЫЕ
 # ==========================================
 
-variable "ssh_private_key" {
-  type      = string
-  sensitive = true
-}
-
 variable "keycloak_secret_key" {
   type      = string
   sensitive = true
@@ -106,7 +101,7 @@ resource "null_resource" "prepare_longhorn_nodes" {
   connection {
     type        = "ssh"
     user        = "ubuntu"
-    private_key = var.ssh_private_key
+    private_key = file("~/.ssh/k8s_terraform")
     host        = each.key
     timeout     = "2m"
   }
