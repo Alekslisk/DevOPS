@@ -7,9 +7,7 @@ resources:
   - laravel-service.yaml
   - postgres.yaml           
   - laravel-rollout.yaml    
-  - minio.yaml             
-  - network-policies.yaml  
-  - ingress.yaml           
+  - minio.yaml              
   - hpa.yaml               
   - analysis-template.yaml
   - minio-init-job.yaml

@@ -1,9 +1,3 @@
-variable "rancher_token" {
-  description = "Rancher API Token"
-  type        = string
-  sensitive   = true
-}
-
 terraform {
   required_providers {
     kubernetes = {
@@ -14,18 +8,12 @@ terraform {
       source  = "hashicorp/helm"
       version = "~> 2.0"
     }
-    rancher2 = {
-      source = "rancher/rancher2"
-    }
+  }
+  # Стейт храним в Git или S3/Minio
+  backend "local" {
+    path = "terraform.tfstate"
   }
 }
-
-provider "rancher2" {
-  api_url   = "https://rancher.imagegalary.local/v3"  
-  token_key = var.rancher_token 
-  insecure  = true
-}
-
 
 provider "kubernetes" {
   config_path = "~/.kube/config"
@@ -37,87 +25,50 @@ provider "helm" {
   }
 }
 
-resource "helm_release" "loki" {
-  name             = "loki"
-  repository       = "https://grafana.github.io/helm-charts"
-  chart            = "loki-stack"
-  namespace        = "monitoring"
-  create_namespace = true
-  
-  set {
-    name  = "promtail.enabled"
-    value = "true" 
-  }
-}
-
+# Переменные (будут браться из TF_VAR_*)
 variable "minio_access_key" {
-  description = "Access Key for MinIO/S3"
-  type        = string
-  sensitive   = true 
+  type      = string
+  sensitive = true
 }
 
 variable "minio_secret_key" {
-  description = "Secret Key for MinIO/S3"
-  type        = string
-  sensitive   = true
+  type      = string
+  sensitive = true
 }
 
 variable "keycloak_secret_key" {
-  description = "Secret Key for Keycloak"
-  type        = string
-  sensitive   = true
+  type      = string
+  sensitive = true
 }
 
-resource "kubernetes_namespace" "app_ns" {
+# ==========================================
+# ТОЛЬКО ТО, ЧТО ЕЩЁ НЕ СОЗДАНО
+# ==========================================
+
+# Неймспейсы (с проверкой, что их нет)
+resource "kubernetes_namespace" "monitoring" {
   metadata {
-    name = "imagegalary-test"
+    name = "monitoring"
     labels = {
-      purpose = "apps"
+      purpose = "monitoring"
     }
   }
 }
 
-resource "kubernetes_secret" "app_aws_secrets" {
-  metadata {
-    name      = "app-secrets"
-    namespace = kubernetes_namespace.app_ns.metadata[0].name
-  }
-  data = {
-    AWS_ACCESS_KEY_ID     = var.minio_access_key
-    AWS_SECRET_ACCESS_KEY = var.minio_secret_key
-  }
-  type = "Opaque"
-}
-
-resource "helm_release" "longhorn" {
-  name             = "longhorn"
-  repository       = "https://charts.longhorn.io"
-  chart            = "longhorn"
-  namespace        = "longhorn-system"
-  create_namespace = true
-}
-
-resource "helm_release" "argocd" {
-  name             = "argocd"
-  repository       = "https://argoproj.github.io/argo-helm"
-  chart            = "argo-cd"
-  namespace        = "argocd"
-  create_namespace = true
+# Loki (был удалён)
+resource "helm_release" "loki" {
+  name             = "loki"
+  repository       = "https://grafana.github.io/helm-charts"
+  chart            = "loki-stack"
+  namespace        = kubernetes_namespace.monitoring.metadata[0].name
 
   set {
-    name  = "server.ingress.enabled"
+    name  = "promtail.enabled"
     value = "true"
   }
-  set {
-    name  = "server.ingress.hosts[0]"
-    value = "argo.imagegalary.local"
-  }
-  set {
-    name  = "server.extraArgs[0]"
-    value = "--insecure"
-  }
 }
 
+# CNPG (был удалён, CRD остались)
 resource "helm_release" "cnpg" {
   name             = "cnpg"
   repository       = "https://cloudnative-pg.github.io/charts"
@@ -126,15 +77,13 @@ resource "helm_release" "cnpg" {
   create_namespace = true
 }
 
+# Keycloak (был удалён)
 resource "helm_release" "keycloak" {
   name             = "keycloak"
-
-  repository       = "oci://registry-1.docker.io/bitnamicharts"
+  repository       = "https://charts.bitnami.com/bitnami"
   chart            = "keycloak"
   namespace        = "keycloak-system"
   create_namespace = true
-
-  version          = "24.4.6"
 
   set {
     name  = "auth.adminUser"
@@ -146,76 +95,152 @@ resource "helm_release" "keycloak" {
   }
   set {
     name  = "ingress.enabled"
-    value = "true"
+    value = "false"
   }
-  set {
-    name  = "ingress.hostname"
-    value = "keycloak.imagegalary.local"
-  }
+  timeout = 600
 }
 
-resource "kubernetes_cluster_role_binding" "admin_access" {
-  metadata { name = "cluster-admin-group-binding" }
-  role_ref {
-    api_group = "rbac.authorization.k8s.io"
-    kind      = "ClusterRole"
-    name      = "cluster-admin" 
-  }
-  subject {
-    kind      = "Group"
-    name      = "admins" 
-    api_group = "rbac.authorization.k8s.io"
-  }
-}
+# ==========================================
+# NETWORK POLICIES
+# ==========================================
 
-resource "kubernetes_role_binding" "devs_access" {
+# Используем data-ресурсы для существующих неймспейсов
+data "kubernetes_namespace" "app_ns" {
   metadata {
-    name      = "devs-zone-binding"
-    namespace = kubernetes_namespace.app_ns.metadata[0].name
-  }
-  role_ref {
-    api_group = "rbac.authorization.k8s.io"
-    kind      = "ClusterRole"
-    name      = "edit" 
-  }
-  subject {
-    kind      = "Group"
-    name      = "developers"
-    api_group = "rbac.authorization.k8s.io"
+    name = "imagegalary-test"
   }
 }
 
-resource "kubernetes_role_binding" "guest_access" {
+data "kubernetes_namespace" "argocd_ns" {
   metadata {
-    name      = "guest-zone-binding"
-    namespace = kubernetes_namespace.app_ns.metadata[0].name
-  }
-  role_ref {
-    api_group = "rbac.authorization.k8s.io"
-    kind      = "ClusterRole"
-    name      = "view" 
-  }
-  subject {
-    kind      = "Group"
-    name      = "guests"
-    api_group = "rbac.authorization.k8s.io"
+    name = "argocd"
   }
 }
 
-resource "kubernetes_role_binding" "designer_access" {
+# Default Deny для приложения
+resource "kubernetes_network_policy" "default_deny_apps" {
   metadata {
-    name      = "designer-zone-binding"
-    namespace = kubernetes_namespace.app_ns.metadata[0].name
+    name      = "default-deny-ingress"
+    namespace = data.kubernetes_namespace.app_ns.metadata[0].name
   }
-  role_ref {
-    api_group = "rbac.authorization.k8s.io"
-    kind      = "ClusterRole"
-    name      = "view" 
-  }
-  subject {
-    kind      = "Group"
-    name      = "designers" 
-    api_group = "rbac.authorization.k8s.io"
+  spec {
+    pod_selector {}
+    policy_types = ["Ingress"]
   }
 }
 
+# Ingress → Laravel
+resource "kubernetes_network_policy" "ingress_to_laravel" {
+  metadata {
+    name      = "allow-ingress-to-laravel"
+    namespace = data.kubernetes_namespace.app_ns.metadata[0].name
+  }
+  spec {
+    pod_selector {
+      match_labels = {
+        app = "laravel"
+      }
+    }
+    ingress {
+      from {
+        namespace_selector {
+          match_labels = {
+            purpose = "infra"  # kube-system с Ingress Controller
+          }
+        }
+      }
+      ports {
+        port     = "80"
+        protocol = "TCP"
+      }
+    }
+    policy_types = ["Ingress"]
+  }
+}
+
+# Laravel → Postgres
+resource "kubernetes_network_policy" "laravel_to_postgres" {
+  metadata {
+    name      = "allow-laravel-to-postgres"
+    namespace = data.kubernetes_namespace.app_ns.metadata[0].name
+  }
+  spec {
+    pod_selector {
+      match_labels = {
+        app = "postgres"
+      }
+    }
+    ingress {
+      from {
+        pod_selector {
+          match_labels = {
+            app = "laravel"
+          }
+        }
+      }
+      ports {
+        port     = "5432"
+        protocol = "TCP"
+      }
+    }
+    policy_types = ["Ingress"]
+  }
+}
+
+# Laravel → Minio
+resource "kubernetes_network_policy" "laravel_to_minio" {
+  metadata {
+    name      = "allow-laravel-to-minio"
+    namespace = data.kubernetes_namespace.app_ns.metadata[0].name
+  }
+  spec {
+    pod_selector {
+      match_labels = {
+        app = "minio"
+      }
+    }
+    ingress {
+      from {
+        pod_selector {
+          match_labels = {
+            app = "laravel"
+          }
+        }
+      }
+      ports {
+        port     = "9000"
+        protocol = "TCP"
+      }
+    }
+    policy_types = ["Ingress"]
+  }
+}
+
+# Ingress → ArgoCD
+resource "kubernetes_network_policy" "ingress_to_argocd" {
+  metadata {
+    name      = "allow-ingress-to-argocd"
+    namespace = data.kubernetes_namespace.argocd_ns.metadata[0].name
+  }
+  spec {
+    pod_selector {
+      match_labels = {
+        "app.kubernetes.io/name" = "argocd-server"
+      }
+    }
+    ingress {
+      from {
+        namespace_selector {
+          match_labels = {
+            purpose = "infra"
+          }
+        }
+      }
+      ports {
+        port     = "8080"
+        protocol = "TCP"
+      }
+    }
+    policy_types = ["Ingress"]
+  }
+}
