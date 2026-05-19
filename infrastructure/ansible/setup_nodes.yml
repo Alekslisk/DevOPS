@@ -12,6 +12,39 @@
         state: present
         update_cache: yes
 
+    - name: Install dependencies for GitHub Runner
+
+    - name: Install CI/CD toolchain
+      apt:
+        name:
+          - unzip
+          - nodejs
+          - npm
+          - git
+          - curl
+          - jq 
+        state: present
+
+    - name: Ensure node is linked correctly 
+      file:
+        src: /usr/bin/nodejs
+        dest: /usr/bin/node
+        state: link
+        force: yes
+
+    - name: Create runner directory
+      file:
+        path: /home/ubuntu/actions-runner
+        state: directory
+        owner: ubuntu
+
+    - name: Download GitHub Actions Runner
+      unarchive:
+        src: https://github.com/actions/runner/releases/download/v2.316.0/actions-runner-linux-x64-2.316.0.tar.gz
+        dest: /home/ubuntu/actions-runner
+        remote_src: yes
+        owner: ubuntu
+
     - name: Install K3s Master with Keycloak OIDC integration
       shell: |
         curl -sfL https://get.k3s.io | sh -s - server \
