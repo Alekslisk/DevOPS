@@ -12,7 +12,7 @@ images:
   newTag: 2744d430a020d73671b176e0bc7388ce509a7cc3
 - name: imagegalary
   newName: alekshex/imagegalary
-  newTag: 28708f70d01ade92a2f8526d13fa9b704c224a4e
+  newTag: 6da2a6819a553e097e495a8232d289bcf013de28
 
 patches:
 - path: patch.yaml
