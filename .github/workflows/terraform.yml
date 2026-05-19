@@ -16,6 +16,7 @@ jobs:
       TF_VAR_minio_secret_key: ${{ secrets.MINIO_SECRET_KEY }}
       TF_VAR_rancher_token: ${{ secrets.RANCHER_TOKEN }}
       TF_VAR_keycloak_secret_key: ${{ secrets.KEYCLOAK_SECRET_KEY }}
+      TF_VAR_ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }}
       # Если нужен admin password отдельно, добавьте свою переменную
 
     steps:
