@@ -89,6 +89,19 @@ resource "helm_release" "argocd" {
   chart            = "argo-cd"
   namespace        = "argocd"
   create_namespace = true
+
+  set {
+    name  = "server.ingress.enabled"
+    value = "true"
+  }
+  set {
+    name  = "server.ingress.hosts[0]"
+    value = "argo.imagegalary.local"
+  }
+  set {
+    name  = "server.extraArgs[0]"
+    value = "--insecure"
+  }
 }
 
 resource "helm_release" "cnpg" {
