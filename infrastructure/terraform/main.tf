@@ -46,7 +46,7 @@ variable "keycloak_secret_key" {
 # ==========================================
 
 # Неймспейсы (с проверкой, что их нет)
-resource "kubernetes_namespace" "monitoring" {
+data "kubernetes_namespace" "monitoring" {
   metadata {
     name = "monitoring"
     labels = {
@@ -82,6 +82,7 @@ resource "helm_release" "keycloak" {
   name             = "keycloak"
   repository       = "https://charts.bitnami.com/bitnami"
   chart            = "keycloak"
+  version          = "24.4.5" 
   namespace        = "keycloak-system"
   create_namespace = true
 
