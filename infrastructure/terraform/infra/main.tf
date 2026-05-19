@@ -121,18 +121,19 @@ resource "helm_release" "argocd" {
 
   depends_on = [helm_release.cnpg]
 
-  set {
+  set = [{
     name  = "server.ingress.enabled"
     value = "true"
-  }
-  set {
+  },
+  {
     name  = "server.ingress.hosts[0]"
     value = "argo.imagegalary.local"
-  }
-  set {
+  },
+  {
     name  = "server.extraArgs[0]"
     value = "--insecure"
   }
+  ]
 }
 
 # Шаг 4: Разворачиваем Loki-Stack (Сбор логов)
@@ -145,10 +146,10 @@ resource "helm_release" "loki" {
 
   depends_on = [helm_release.argocd]
 
-  set {
+  set =  [{
     name  = "promtail.enabled"
     value = "true"
-  }
+  }]
 }
 
 # Шаг 5: Разворачиваем Keycloak (Аутентификация) через OCI
@@ -163,16 +164,15 @@ resource "helm_release" "keycloak" {
   
   depends_on = [helm_release.loki] 
 
-  set {
+  set = [{
     name  = "auth.adminUser"
     value = "admin"
-  }
-  set {
+  },{
     name  = "auth.adminPassword"
     value = var.keycloak_secret_key
-  }
-  set {
+  },{
     name  = "ingress.enabled"
     value = "false"
   }
+  ]
 }
