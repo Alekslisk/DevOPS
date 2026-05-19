@@ -45,6 +45,8 @@ resource "helm_release" "kube_prometheus_stack" {
   create_namespace = true
 }
 
+
+
 resource "helm_release" "loki" {
   name             = "loki"
   repository       = "https://grafana.github.io/helm-charts"
