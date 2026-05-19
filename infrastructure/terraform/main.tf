@@ -1,3 +1,9 @@
+variable "rancher_token" {
+  description = "Rancher API Token"
+  type        = string
+  sensitive   = true
+}
+
 terraform {
   required_providers {
     kubernetes = {
@@ -8,8 +14,18 @@ terraform {
       source  = "hashicorp/helm"
       version = "~> 2.0"
     }
+    rancher2 = {
+      source = "rancher/rancher2"
+    }
   }
 }
+
+provider "rancher2" {
+  api_url   = "https://rancher.imagegalary.local/v3"  
+  token_key = var.rancher_token 
+  insecure  = true
+}
+
 
 provider "kubernetes" {
   config_path = "~/.kube/config"
@@ -199,5 +215,14 @@ resource "kubernetes_role_binding" "designer_access" {
     kind      = "Group"
     name      = "designers" 
     api_group = "rbac.authorization.k8s.io"
+  }
+}
+
+resource "kubernetes_namespace" "app_ns" {
+  metadata {
+    name = "imagegalary-test"
+    labels = {
+      purpose = "apps"
+    }
   }
 }
