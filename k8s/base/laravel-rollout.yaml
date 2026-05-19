@@ -16,18 +16,21 @@ spec:
       containers:
       - name: laravel
         image: imagegalary:latest 
+        securityContext:
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: false
         resources:
           requests:
             cpu: "200m"   
             memory: "256Mi"
           limits:  
-            cpu: "1000m"   
-            memory: "2Gi"
+            cpu: "300m"  
+            memory: "384Mi"
         env:
         - name: DB_CONNECTION
           value: "pgsql"
         - name: DB_HOST
-          value: "postgres-service"
+          value: "postgres-cluster-rw"
         - name: DB_PORT
           value: "5432"
         - name: DB_DATABASE
@@ -46,5 +49,8 @@ spec:
       steps:
       - setWeight: 25 
       - pause: {duration: 1m} 
+      - analysis: 
+          templates:
+          - templateName: success-rate
       - setWeight: 50
       - pause: {}

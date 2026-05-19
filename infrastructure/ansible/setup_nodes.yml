@@ -1,8 +1,8 @@
-- name: Prepare Multipass Nodes for K8s
-  hosts: all
+- name: Install and Configure K3s Cluster with Keycloak OIDC
+  hosts: masters
   become: true
   tasks:
-    - name: Clean up unused container images (Prevent DiskPressure)
+    - name: Clean up unused container images
       command: crictl rmi --prune
       ignore_errors: true
 
@@ -11,27 +11,13 @@
         name: [nfs-common, curl, htop]
         state: present
         update_cache: yes
-    
-    - name: Install Longhorn via Helm
-      kubernetes.core.helm:
-        name: longhorn
-        chart_ref: longhorn/longhorn
-        release_namespace: longhorn-system
-        create_namespace: yes
-        wait: yes
 
-    - name: Ensure app-secrets exist in the correct namespace
-      kubernetes.core.k8s:
-        state: present
-        definition:
-          apiVersion: v1
-          kind: Secret
-          metadata:
-            name: app-secrets
-            namespace: imagegalary-test 
-          type: Opaque
-          data:
-            AWS_ACCESS_KEY_ID: "{{ 'your_id' | b64encode }}"
-            AWS_SECRET_ACCESS_KEY: "{{ 'your_key' | b64encode }}"
-            POSTGRES_USER: "{{ 'your_user' | b64encode }}"
-            POSTGRES_PASSWORD: "{{ 'your_pass' | b64encode }}"
+    - name: Install K3s Master with Keycloak OIDC integration
+      shell: |
+        curl -sfL https://get.k3s.io | sh -s - server \
+          --kube-apiserver-arg="oidc-issuer-url=http://keycloak.imagegalary.local/realms/imagegalary" \
+          --kube-apiserver-arg="oidc-client-id=kubernetes" \
+          --kube-apiserver-arg="oidc-username-claim=email" \
+          --kube-apiserver-arg="oidc-groups-claim=groups"
+      register: k3s_install
+      failed_when: k3s_install.rc != 0
