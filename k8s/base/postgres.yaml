@@ -1,36 +1,27 @@
----
-apiVersion: v1
-kind: Service
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
 metadata:
-  name: postgres-service
+  name: postgres-cluster
+  namespace: imagegalary-test
 spec:
-  selector:
-    app: postgres
-  ports:
-    - port: 5432
----
-apiVersion: apps/v1
-kind: StatefulSet
-metadata:
-  name: postgres
-spec:
-  serviceName: "postgres-service"
-  selector:
-    matchLabels:
-      app: postgres
-  template:
-    metadata:
-      labels:
-        app: postgres
-    spec:
-      containers:
-      - name: postgres
-        image: postgres:15-alpine
-        env:
-        - name: POSTGRES_DB
-          value: "imagegalary"
-        envFrom:
-        - secretRef:
-            name: app-secrets
-        ports:
-        - containerPort: 5432
+  instances: 2
+  storage:
+    storageClass: longhorn
+    size: 10Gi
+  backup:
+    barmanObjectStore:
+      destinationPath: "s3://pg-backups/" # Бакет в MinIO (создай его заранее)
+      endpointURL: "http://minio-service.imagegalary-test.svc.cluster.local:9000"
+      s3Credentials:
+        accessKeyId:
+          name: app-secrets
+          key: AWS_ACCESS_KEY_ID
+        secretAccessKey:
+          name: app-secrets
+          key: AWS_SECRET_ACCESS_KEY
+      wal:
+        compression: gzip
+  bootstrap:
+    initdb:
+      database: imagegalary
+      owner: appuser

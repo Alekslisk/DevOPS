@@ -11,3 +11,7 @@ resources:
   - network-policies.yaml  
   - ingress.yaml           
   - hpa.yaml               
+  - analysis-template.yaml
+  - minio-init-job.yaml
+  - minio-backup.yaml
+  - minio-backup-job.yaml

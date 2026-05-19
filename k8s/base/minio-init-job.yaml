@@ -1,0 +1,44 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: minio-init-buckets
+  namespace: imagegalary-test
+  annotations:
+    argocd.argoproj.io/hook: PostSync
+spec:
+  template:
+    metadata:
+      labels:
+        app: minio-init
+    spec:
+      containers:
+      - name: mc
+        image: minio/mc:latest
+        command:
+        - /bin/sh
+        - -c
+        - |
+          echo "Waiting for MinIO to start..."
+          until mc alias set myminio http://minio-service:9000 $MINIO_ROOT_USER $MINIO_ROOT_PASSWORD; do 
+            echo "MinIO not ready yet, retrying in 5 seconds..."
+            sleep 5; 
+          done;
+          
+          echo "MinIO is up! Configuring buckets..."
+          mc mb myminio/pg-backups --ignore-existing
+          mc mb myminio/laravel-images --ignore-existing
+          mc mb myminio/minio-archives --ignore-existing
+          
+          echo "All buckets created successfully!"
+        env:
+        - name: MINIO_ROOT_USER
+          valueFrom:
+            secretKeyRef:
+              name: app-secrets
+              key: AWS_ACCESS_KEY_ID
+        - name: MINIO_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: app-secrets
+              key: AWS_SECRET_ACCESS_KEY
+      restartPolicy: OnFailure

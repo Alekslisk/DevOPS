@@ -1,0 +1,8 @@
+apiVersion: ops.imagegalary.local/v1alpha1
+kind: MinioBackup
+metadata:
+  name: app-images-backup
+  namespace: imagegalary-test
+spec:
+  sourceBucket: "laravel-images"
+  archiveBucket: "minio-archives"
